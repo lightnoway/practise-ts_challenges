@@ -22,27 +22,47 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyAwaited<T> = any
+// type MyAwaited<T> = T extends Promise<infer R> ? R : never;
+/* case3~5,6 fail: 考虑嵌套 */
+
+// type MyAwaited<T> = T extends Promise<infer R>
+//   ? R extends Promise<unknown>
+//     ? MyAwaited<R>
+//     : R
+//   : never;
+/* 6 fail:  thenable */
+
+type Thenable<T> = {
+  then: (onfulfilled: (arg: T) => unknown) => unknown;
+};
+
+type MyAwaited<T extends Thenable<unknown> | Promise<unknown>> = T extends
+  | Promise<infer R>
+  | Thenable<infer R>
+  ? R extends Thenable<unknown> | Promise<unknown>
+    ? MyAwaited<R>
+    : R
+  : never;
 
 /* _____________ Test Cases _____________ */
-import type { Equal, Expect } from '@type-challenges/utils'
+import type { Equal, Expect } from "@type-challenges/utils";
 
-type X = Promise<string>
-type Y = Promise<{ field: number }>
-type Z = Promise<Promise<string | number>>
-type Z1 = Promise<Promise<Promise<string | boolean>>>
-type T = { then: (onfulfilled: (arg: number) => any) => any }
+type X = Promise<string>;
+type Y = Promise<{ field: number }>;
+type Z = Promise<Promise<string | number>>;
+type Z1 = Promise<Promise<Promise<string | boolean>>>;
+type T = { then: (onfulfilled: (arg: number) => any) => any };
 
 type cases = [
   Expect<Equal<MyAwaited<X>, string>>,
   Expect<Equal<MyAwaited<Y>, { field: number }>>,
   Expect<Equal<MyAwaited<Z>, string | number>>,
   Expect<Equal<MyAwaited<Z1>, string | boolean>>,
-  Expect<Equal<MyAwaited<T>, number>>,
-]
+  Expect<Equal<MyAwaited<T>, number>>
+];
 
 // @ts-expect-error
-type error = MyAwaited<number>
+type error = MyAwaited<number>;
 
 /* _____________ Further Steps _____________ */
 /*

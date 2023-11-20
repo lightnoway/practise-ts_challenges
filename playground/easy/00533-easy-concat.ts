@@ -18,23 +18,52 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Concat<T, U> = any
+// type Concat<T extends unknown[], U extends unknown[]> = T extends []
+//   ? U extends []
+//     ? []
+//     : U
+//   : T extends [infer F]
+//   ? [F, ...U]
+//   : T extends [infer F, ...infer L]
+//   ? [F, ...L, ...U]
+//   : never;
+// case 3 : ? 不为空 才能 ... ?
+
+// type Concat<T extends unknown[], U extends unknown[]> = T extends []
+//   ? U extends []
+//     ? []
+//     : U
+//   : U extends []
+//   ? T
+//   : T extends [infer F]
+//   ? [F, ...U]
+//   : T extends [infer F, ...infer L]
+//   ? [F, ...L, ...U]
+//   : never;
+
+//答案
+type Concat<T extends readonly unknown[], U extends readonly unknown[]> = [...T, ...U];
 
 /* _____________ Test Cases _____________ */
-import type { Equal, Expect } from '@type-challenges/utils'
+import type { Equal, Expect } from "@type-challenges/utils";
 
-const tuple = [1] as const
+const tuple = [1] as const;
 
 type cases = [
   Expect<Equal<Concat<[], []>, []>>,
   Expect<Equal<Concat<[], [1]>, [1]>>,
   Expect<Equal<Concat<typeof tuple, typeof tuple>, [1, 1]>>,
   Expect<Equal<Concat<[1, 2], [3, 4]>, [1, 2, 3, 4]>>,
-  Expect<Equal<Concat<['1', 2, '3'], [false, boolean, '4']>, ['1', 2, '3', false, boolean, '4']>>,
-]
+  Expect<
+    Equal<
+      Concat<["1", 2, "3"], [false, boolean, "4"]>,
+      ["1", 2, "3", false, boolean, "4"]
+    >
+  >
+];
 
 // @ts-expect-error
-type error = Concat<null, undefined>
+type error = Concat<null, undefined>;
 
 /* _____________ Further Steps _____________ */
 /*

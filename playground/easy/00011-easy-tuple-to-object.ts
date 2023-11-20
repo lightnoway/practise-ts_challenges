@@ -20,7 +20,11 @@
 
 /* _____________ Your Code Here _____________ */
 
-type TupleToObject<T extends readonly any[]> = any
+type TupleToObject<T extends readonly (string|symbol|number)[]> = {
+  [key in   T[number]]:key
+}
+
+// type x = TupleToObject<typeof tupleMix>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
