@@ -32,16 +32,13 @@
 //   : never;
 /* 6 fail:  thenable */
 
-type Thenable<T> = {
-  then: (onfulfilled: (arg: T) => unknown) => unknown;
-};
+type ThenAble<T> = { then: (onfulfilled: (arg: T) => unknown) => unknown };
+type PromiseLike<T> = ThenAble<T> | Promise<T>;
 
-type MyAwaited<T extends Thenable<unknown> | Promise<unknown>> = T extends
-  | Promise<infer R>
-  | Thenable<infer R>
-  ? R extends Thenable<unknown> | Promise<unknown>
-    ? MyAwaited<R>
-    : R
+type MyAwaited<T extends PromiseLike<unknown>> = T extends PromiseLike<infer P>
+  ? P extends PromiseLike<unknown>
+    ? MyAwaited<P>
+    : P
   : never;
 
 /* _____________ Test Cases _____________ */
