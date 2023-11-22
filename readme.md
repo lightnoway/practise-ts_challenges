@@ -3,6 +3,16 @@
  - 约束  a,b 的关系
  - 在泛型中时 `a extends b` 返回a,b的交集, 交集可以用3目 :`R?不为空时:为空时`
   - 不是泛型不能这样，[当整体判断](https://github.com/type-challenges/type-challenges/issues/54)
+  - 表示 a 可以赋值给 b ：
+    - a extends b 哪些条件可以成立
+      - 将 a,b 泛化成组合
+      - a 存在 itemA 和 b 中 某itemB 一样 ；则 ?itemA 的组合
+      - a 存在 itemA 是 b 中 某itemB 的子集(被包含，2者相同时也包含) ； 则同上
+      - 具体 'a' extends string ：true ；  string  extends 'a' :false;
+    - `[K in keyof T as P extends K? never : K extends P ? K : never]: T[K]` 当其中 P 是 string时： K 是 'a' 则 false,true; K是 string 则 true,true;
+      - ? 为什么不去掉后一个 extends : 所在场景 P 是 `number|string|symbol`
+      - ? 类型拆分，组合 ，与父子关系？
+
 - `keyof T`:  返回 T的键名Tuple
   - `as`
    - `[key in exclude<keyof T, K>] vs [key in keyof T as key extends ...]` 前者可以保留原有readOnly; 见 008-medium-readonly
@@ -12,6 +22,8 @@
 
 
 ### 有用的
+- 检查 extends 哪些情况满足
+ - ` [K in keyof T ]:   P extends K ? 1 : K extends P ? 2 : 3 //检查 哪些情况成立了`
 - 显示类型完整结构
 ```ts
 type LogDetail<T> = {
