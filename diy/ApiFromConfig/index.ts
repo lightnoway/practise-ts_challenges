@@ -1,21 +1,24 @@
-import axios, { AxiosInstance } from "axios";
+import { AxiosInstance } from "axios";
 import {
-  ApiConfigType,
-  CreateApiClient,
+  ApiClientCreatorImp,
   Method,
+  ParseMethod,
   RequestConfig,
   RequestConfigOption,
   RequestConfigOptionObj,
-  RequestMethod,
 } from "./types";
 
 // const CreateApiByConfig: CreateApiClient<T> = function<T extends ApiConfigType>(instance,config){
-export const createApiByConfig: <T extends ApiConfigType>(
-  ...args: Parameters<CreateApiClient<T>>
-) => ReturnType<CreateApiClient<T>> = function (instance, config) {
+// export const createApiByConfig: <T extends ApiConfigType>(
+//   ...args: Parameters<CreateApiClient<T>>
+// ) => ReturnType<CreateApiClient<T>> = function (instance, config) {
+
+export const apiClientCreator: ApiClientCreatorImp = (instance, config) => {
   const api = Object.create(null);
-  for (const [method, requestConfig] of Object.entries(config)) {
-    api[method] = parseRequestMethod(instance, requestConfig);
+  for (const [methodName, methodConfigOption] of Object.entries(
+    config as Record<string, RequestConfigOption>
+  )) {
+    api[methodName] = parseRequestMethod(instance, methodConfigOption);
   }
   return api;
 };
@@ -23,7 +26,7 @@ export const createApiByConfig: <T extends ApiConfigType>(
 function parseRequestMethod<T extends RequestConfig>(
   instance: AxiosInstance,
   option: RequestConfigOption<T>
-): RequestMethod<T> {
+): ParseMethod<T> {
   let _option: RequestConfigOptionObj;
   if (typeof option == "string") {
     const [method, path] = option.split(/\s+/);
@@ -43,37 +46,6 @@ function parseRequestMethod<T extends RequestConfig>(
   }) as any;
 }
 
-// function CreateApiByConfig<
-//   T extends ApiConfigType
-// >(config: ApiConfig<T>["api"]): ApiClient<T> {
-//   const instance = axios.create({});
-//   const api = Object.create(null);
-//   for (const [method, mConfig] of Object.entries(config.api)) {
-//     api[method] = (o) => instance.request(o);
-//   }
-
-//   return api;
-// };
-
-// - 目标
-// 输入
-
-//输出
-// const api: ApiClient<AConfig> = CreateApiByConfig<AConfig>({
-//   // getUser: "Get ssdf",
-//   getUser: "GET ssdf",
-//   removeArticle: {
-//     method: "DELETE",
-//     path: "article",
-//   },
-//   editArticle: (instance) => {
-//     return (option) => instance.put("path", option) as Promise<void>;
-//   },
-// });
-// //能够自动提示
-// api
-//   .getUser({ id: 3 })
-//   .then((items) => console.log("first content", items[0].content));
 
 /* 
  问题：
@@ -94,7 +66,6 @@ type F<T> = (arg: T) => string; // 假设泛型函数类型 F<T> 接受一个类
 const myFunction: <T>(arg: Parameters<F<T>>) => ReturnType<F<T>> = (arg) => {
   return 0 as any;
 };
-
 
 /* 
 泛型默认值
