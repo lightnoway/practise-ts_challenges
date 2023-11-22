@@ -4,10 +4,24 @@
  - 在泛型中时 `a extends b` 返回a,b的交集, 交集可以用3目 :`R?不为空时:为空时`
   - 不是泛型不能这样，[当整体判断](https://github.com/type-challenges/type-challenges/issues/54)
 - `keyof T`:  返回 T的键名Tuple
+  - `as`
+   - `[key in exclude<keyof T, K>] vs [key in keyof T as key extends ...]` 前者可以保留原有readOnly; 见 008-medium-readonly
 - `x in T`: 声明 x  遍历 T ;x 是个变量
   - 不能 `[key:K]:T[key]` ,提示改为map ` [key in K]:T[key]` ; 2种语法
 - `... T`: T 是 `[]` 也能用
 
+
+### 有用的
+- 显示类型完整结构
+```ts
+type LogDetail<T> = {
+  [key in keyof T]: T[key];
+};
+type Log = LogDetail<Todo2>;//看 Log 的提示
+```
+
+- https://www.npmjs.com/package/ts-essentials
+  - 有空试试 `printType<Log>())`
 
 ### 不理解的
 - `['tesla', 'model 3', 'model X', 'model Y'] as const` tuple声明

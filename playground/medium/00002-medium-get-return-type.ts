@@ -25,7 +25,11 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyReturnType<T> = any
+type MyReturnType<T extends Function> = T extends (...args)=>infer R 
+? R
+:never
+
+type Log = MyReturnType<typeof fn> //日志：never
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
