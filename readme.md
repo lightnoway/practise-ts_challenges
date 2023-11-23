@@ -1,6 +1,6 @@
 ### ts知识点：
 - ` a extends b `: 
- - 约束  a,b 的关系
+ - 约束  a,b 的关系: `const x:b = a`
  - 在泛型中时 `a extends b` 返回a,b的交集, 交集可以用3目 :`R?不为空时:为空时`
   - 不是泛型不能这样，[当整体判断](https://github.com/type-challenges/type-challenges/issues/54)
   - 表示 a 可以赋值给 b ：

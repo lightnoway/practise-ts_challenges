@@ -25,9 +25,9 @@
 
 type RemoveIndexSignature<T,P=PropertyKey> = {
   // [key in keyof T as key extends `${infer literKey}` ? literKey: never ]:T[key] 
-  [key in keyof T  ]:key extends `${infer literKey}` ? literKey: 1 //检查: key 是 string 为1；说明 ``中 infer literKey 不能指向string
+  // [key in keyof T  ]:key extends `${infer literKey}` ? literKey: 1 //检查: key 是 string 为1；说明 ``中 infer literKey 不能指向string
 
-  // [K in keyof T as P extends K? never : K extends P ? K : never]: T[K]
+  [K in keyof T as P extends K? never : K extends P ? K : never]: T[K]
   // [K in keyof T as P extends K ? never : K extends P ? K : never]: T[K]
   // [K in keyof T ]:   P extends K ? 1 : K extends P ? 2 : 3 //检查 哪些情况成立了
 }
