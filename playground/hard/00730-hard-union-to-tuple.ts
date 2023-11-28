@@ -39,7 +39,11 @@
 
 /* _____________ Your Code Here _____________ */
 
-type UnionToTuple<T> = any
+// type UnionToTuple<T> = any
+
+//不会，直接看答案
+// todo
+
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'

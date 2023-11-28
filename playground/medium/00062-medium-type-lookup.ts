@@ -29,28 +29,59 @@
 
 /* _____________ Your Code Here _____________ */
 
-type LookUp<U, T> = any
+// type LookUp<U, T> = any
+
+// 解1：参考github; nakedType distribute
+// type LookUp<U, T> = U extends {type:T}?U:never
+
+// 解2: force union distribute
+// type LookUp<T extends { type: string }, U extends string> = T extends unknown 
+// ? T['type'] extends U 
+//   ? T 
+//   : never
+// : never
+
+// 解3: map 风格
+type LookUp<T,U extends string> = {
+  [key in U]: T extends {type:key}?T :never
+}[U]
+
+
+//try-过滤Union- ? 直接过滤
+// - 猜: U['type'] extends 不能过滤;  U extends {type:T} 可以过滤
+//  - Because T['type'] is not a naked type and thus doesn't get distributed. And "dog" | "cat" doesn't extend neither "dog" nor "cat" 
+//   - https://github.com/type-challenges/type-challenges/issues/149
+// type LookUp<
+//   U extends { type: string },
+//   T extends U["type"]
+// > = U["type"]  extends T ? U : never;
+//try-过滤Union- ? map过滤
+// type LookUp<U extends { type: string }, T extends U["type"]> = {
+//   [key in U["type"] ]:   key extends T ? U : never ;
+// }[T];
+
+type Log = LookUp<Animal, "dog">;
 
 /* _____________ Test Cases _____________ */
-import type { Equal, Expect } from '@type-challenges/utils'
+import type { Equal, Expect } from "@type-challenges/utils";
 
 interface Cat {
-  type: 'cat'
-  breeds: 'Abyssinian' | 'Shorthair' | 'Curl' | 'Bengal'
+  type: "cat";
+  breeds: "Abyssinian" | "Shorthair" | "Curl" | "Bengal";
 }
 
 interface Dog {
-  type: 'dog'
-  breeds: 'Hound' | 'Brittany' | 'Bulldog' | 'Boxer'
-  color: 'brown' | 'white' | 'black'
+  type: "dog";
+  breeds: "Hound" | "Brittany" | "Bulldog" | "Boxer";
+  color: "brown" | "white" | "black";
 }
 
-type Animal = Cat | Dog
+type Animal = Cat | Dog;
 
 type cases = [
-  Expect<Equal<LookUp<Animal, 'dog'>, Dog>>,
-  Expect<Equal<LookUp<Animal, 'cat'>, Cat>>,
-]
+  Expect<Equal<LookUp<Animal, "dog">, Dog>>,
+  Expect<Equal<LookUp<Animal, "cat">, Cat>>
+];
 
 /* _____________ Further Steps _____________ */
 /*
