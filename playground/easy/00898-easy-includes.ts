@@ -89,20 +89,27 @@ type IsEqual<T, U> = (<G>() => G extends T ? 1 : 2) extends <H>() => H extends U
 // const x: AIncludes<["Kars", "Esidisi","Esidisi2"], "Kars"> = 20; //不通过: 递归后, ：倒着执行 Equal 的
 // console.log(x);
 
-// 通过: 范式
-type Includes<Items extends readonly any[], Value> = Items['length'] extends 0
-? false
-: Items extends [Items[0],... infer Rest]  
-? Equal<Items[0],Value> extends true
-  ? true
-  : Includes<Rest,Value> 
-: never
+// 解1 通过: 范式
+// type Includes<Items extends readonly any[], Value> = Items['length'] extends 0
+// ? false
+// : Items extends [Items[0],... infer Rest]
+// ? Equal<Items[0],Value> extends true
+//   ? true
+//   : Includes<Rest,Value>
+// : never
 
-// 通过2：推荐
-// type Includes<T extends readonly any[], U> = true extends
-// {[K in keyof T]: Equal<T[K], U>}[number]
-// ? true
-// : false;
+// 解2 通过2：推荐
+type Includes<T extends readonly any[], U> = true extends
+{[K in keyof T]: Equal<T[K], U>}[number]
+? true
+: false;
+
+// ?:try-3
+// type Includes<Items extends readonly any[],U> = Items extends 
+// [... infer Before,U,... infer Rest] ?true:false
+// // [... infer Before,U,... infer Rest] ?[...Before,U , ...Rest]:false // 返回 unkown []
+// type Log = Includes<[1, 2, 3, 5, 6, 7], 4>
+// - ? 为啥不生效
 
 // 判断空数组
 type lArrEmpty<T extends readonly any[]> = T extends [] ? 0 : 1;

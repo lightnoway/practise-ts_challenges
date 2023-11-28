@@ -23,17 +23,31 @@
 */
 
 /* _____________ Your Code Here _____________ */
+// 解1 遍历
+// type Last<T extends any[]> = T extends [T[0], ...infer Rest]
+//   ? Rest["length"] extends 0
+//     ? T[0]
+//     : Last<Rest>
+//   : never;
+// 不能 算数运算： length - 1 ; length 能拿到，但不能 -1
+// - 但可以模式匹配补一位
+// - test  T 为 [] 时 extends [T[0], ...infer Rest] ? 0 :1 ; 返回1
+type Log = Last<[]>;
 
-type Last<T extends any[]> = any
+//解2 模式匹配
+// type Last<T extends any[]> = [never, ...T][T["length"]];
+
+//解3 模式匹配, typescript rest 可以写前边
+type Last<T extends any[]> = T extends [...infer _, infer Last] ? Last : never;
 
 /* _____________ Test Cases _____________ */
-import type { Equal, Expect } from '@type-challenges/utils'
+import type { Equal, Expect } from "@type-challenges/utils";
 
 type cases = [
   Expect<Equal<Last<[2]>, 2>>,
   Expect<Equal<Last<[3, 2, 1]>, 1>>,
-  Expect<Equal<Last<[() => 123, { a: string }]>, { a: string }>>,
-]
+  Expect<Equal<Last<[() => 123, { a: string }]>, { a: string }>>
+];
 
 /* _____________ Further Steps _____________ */
 /*

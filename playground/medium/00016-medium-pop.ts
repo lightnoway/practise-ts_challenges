@@ -26,16 +26,25 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Pop<T extends any[]> = any
+// 解1 递归
+// type Pop<T extends any[]> = T extends [T[0], ...infer Rest]
+//   ? Rest["length"] extends 0
+//     ? []
+//     : [T[0], ...Pop<Rest>]
+//   : [];
+
+// 解2 模式匹配
+type Pop<T extends any[]> = T extends [...infer Pre, infer _] ? Pre : [];
+type Log = Pop<[]>;
 
 /* _____________ Test Cases _____________ */
-import type { Equal, Expect } from '@type-challenges/utils'
+import type { Equal, Expect } from "@type-challenges/utils";
 
 type cases = [
   Expect<Equal<Pop<[3, 2, 1]>, [3, 2]>>,
-  Expect<Equal<Pop<['a', 'b', 'c', 'd']>, ['a', 'b', 'c']>>,
-  Expect<Equal<Pop<[]>, []>>,
-]
+  Expect<Equal<Pop<["a", "b", "c", "d"]>, ["a", "b", "c"]>>,
+  Expect<Equal<Pop<[]>, []>>
+];
 
 /* _____________ Further Steps _____________ */
 /*

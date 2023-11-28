@@ -68,6 +68,7 @@ type exclude<From, Exclude extends From> = From extends Exclude ? never : From;
 // type MyReadonly2<T, K extends keyof T = keyof T> = Omit<T, K> &
 //   Readonly<Pick<T, K>>;
 
+// redo:
 
 type Flatten<T extends { [key: string]: any }> = { [key in keyof T]: T[key] }
 

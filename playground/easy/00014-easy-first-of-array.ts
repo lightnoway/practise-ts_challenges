@@ -27,6 +27,7 @@
 type First<T extends any[]> = T extends [infer A, ... unknown[]] ? A : never;
 const x: First<[3, 2, 1]> = 3;
 console.log("x", x);
+// type log = First<[3, 2, 1] as const>
 
 /* 
 -case3 : 3目判断一下
