@@ -16,10 +16,14 @@ type OneOf<T extends readonly unknown[], U> = T extends [T[0], ...infer Rest]
     : OneOf<Rest, U>
   : false;
 
-type Log = OneOf<[number, string], number>;
+// // type Log = OneOf<[number, string], number>;
+
+// type UnionToIntersection<T> =  (p:T)=>void extends (p:infer R)=>void ?R:never
+// type Log =   UnionToIntersection<{a:number,b:string}|{a:number,c:string}>
+// let a:Log = {}
 
 /* _____________ Test Cases _____________ */
-import type { Equal, Expect } from "@type-challenges/utils";
+import type { Equal, Expect, MergeInsertions } from "@type-challenges/utils";
 
 type cases = [
   Expect<Equal<true, OneOf<[number, string], number>>>,
